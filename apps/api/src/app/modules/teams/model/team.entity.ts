@@ -9,7 +9,7 @@ export class Team {
   @Column('varchar')
   country:string;
 
-  @Column('blob')
+  @Column('varchar')
   logoFileName:string;
 
 
