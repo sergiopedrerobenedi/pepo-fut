@@ -3,13 +3,11 @@ import {
   Body,
   Controller,
   HttpCode,
-  HttpException,
   HttpStatus,
   Post,
   UnauthorizedException,
 } from '@nestjs/common';
 import {
-  ApiBadRequestResponse,
   ApiOperation,
   ApiProduces,
   ApiResponse,

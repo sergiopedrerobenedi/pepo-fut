@@ -1,4 +1,4 @@
 export class JwtPayload {
 
-    constructor(readonly id: number, readonly username: string) { }
+    constructor(readonly id: string, readonly username: string) { }
 }
