@@ -4,3 +4,13 @@ services:
     image: pepo-fut-api
     ports:
       - '8081:3333'
+  db:
+    image: postgres:11.2-alpine
+    environment:
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_USER: postgres
+      POSTGRES_DB: pepo_fut
+    volumes:
+      - ./pgdata/var/lib/postgresql/data
+    ports:
+      - '5432:5432'
