@@ -1,6 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { Type } from 'class-transformer';
-import { IsString, ValidateNested } from 'class-validator';
+import { ChampionshipResponseDto } from '../../championships/dto/championship-response.dto';
 import { PlayerResponseDto } from '../../players/dto/player-response.dto';
 
 export class TeamResponseDto {
@@ -16,7 +15,6 @@ export class TeamResponseDto {
     required: true,
     example: 'Real Zaragoza',
   })
-  @IsString()
   name: string;
 
   @ApiProperty({
@@ -24,7 +22,6 @@ export class TeamResponseDto {
     required: true,
     example: 'Christian Lapetra',
   })
-  @IsString()
   president: string;
 
   @ApiProperty({
@@ -32,7 +29,6 @@ export class TeamResponseDto {
     required: true,
     example: 'Spain',
   })
-  @IsString()
   nationality: string;
 
   @ApiProperty({
@@ -40,7 +36,6 @@ export class TeamResponseDto {
     required: true,
     example: 'La Romareda',
   })
-  @IsString()
   stadium: string;
 
   @ApiProperty({
@@ -48,7 +43,6 @@ export class TeamResponseDto {
     required: true,
     example: 'images/teams/realZaragoza.jpg',
   })
-  @IsString()
   logoPath: string;
 
   @ApiProperty({
@@ -56,7 +50,12 @@ export class TeamResponseDto {
     required: true,
     isArray: true,
   })
-  @Type(() => PlayerResponseDto)
-  @ValidateNested({ each: true })
   players: PlayerResponseDto[];
+
+  @ApiProperty({
+    type: ChampionshipResponseDto,
+    required: true,
+    example: new ChampionshipResponseDto(),
+  })
+  championship: ChampionshipResponseDto;
 }

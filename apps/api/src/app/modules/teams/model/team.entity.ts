@@ -34,7 +34,7 @@ export class Team {
   foundationDate: Date;
 
   @OneToMany(() => Player, (players) => players.team)
-  players: Player;
+  players: Player[];
 
   @ManyToOne(() => Championship, (championship) => championship)
   championship: Championship;

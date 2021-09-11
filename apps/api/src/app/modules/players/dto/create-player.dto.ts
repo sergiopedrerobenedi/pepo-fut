@@ -75,11 +75,4 @@ export class CreatePlayerDto {
     example: [PLAYER_POSITIONS[0]],
   })
   positions: PlayerPositionDto[];
-
-  // @ApiProperty({
-  //   type: TeamResponseDto,
-  //   required: true,
-  //   example: 'right',
-  // })
-  // team: Team;
 }

@@ -31,29 +31,27 @@ export class TeamsService implements ICrudServices<Team, TeamResponseDto, Create
   }
 
   create(createTeamDto: CreateTeamDto): Promise<void> {
-    return;
-    // return this.repository
-    //   .save(this.repository.create(createTeamDto))
-    //   .then(() => {
-    //     return;
-    //   })
-    //   .catch((error) => {
-    //     throw new Error(error);
-    //   });
+    return this.repository
+      .save(this.repository.create(createTeamDto))
+      .then(() => {
+        return;
+      })
+      .catch((error) => {
+        throw new Error(error);
+      });
   }
 
   @Transaction()
   async updateById(id: any, updateDto: UpdateTeamDto, repository?: Repository<Team>): Promise<void> {
-    return;
-    // const dbTeam: Team = await this.fetchById(id);
-    // return repository
-    //   .save({ ...dbTeam, ...updateDto })
-    //   .catch((error) => {
-    //     throw new Error(error);
-    //   })
-    //   .then(() => {
-    //     return;
-    //   });
+    const dbTeam: Team = await this.fetchById(id);
+    return repository
+      .save({ ...dbTeam, ...updateDto })
+      .catch((error) => {
+        throw new Error(error);
+      })
+      .then(() => {
+        return;
+      });
   }
   patchById(id: any, createDto: CreateTeamDto): Promise<void> {
     throw new Error('Method not implemented.');
@@ -62,7 +60,7 @@ export class TeamsService implements ICrudServices<Team, TeamResponseDto, Create
     throw new Error('Method not implemented.');
   }
   fromEntityToDto(entity: Team): TeamResponseDto {
-    throw new Error('Method not implemented.');
+    return { ...entity };
   }
 
   private fetchAll(queryParams: TeamsQueryParams): Promise<Pagination<Team>> {

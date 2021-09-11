@@ -1,26 +1,27 @@
-import { Column, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn } from "typeorm";
-import { Team } from "../../../../teams/model/team.entity";
-import { Round } from "../../rounds/model/round.entity";
+import { Column, CreateDateColumn, Entity, ManyToOne, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
+import { Team } from '../../../../teams/model/team.entity';
+import { Round } from '../../rounds/model/round.entity';
 
 @Entity()
 export class Match {
-
   @PrimaryGeneratedColumn('uuid')
-  id:string;
+  id: string;
 
-  @ManyToOne( type => Round, round => round.matchs)
-  round:Round;
+  @ManyToOne((type) => Round, (round) => round.matchs)
+  round: Round;
 
   @Column('date')
-  startDate:Date;
+  startDate: Date;
 
   @ManyToOne(() => Team, (team) => team)
-  localTeam:Team
-
+  localTeam: Team;
 
   @ManyToOne(() => Team, (team) => team)
-  awayTeam:Team
+  awayTeam: Team;
 
+  @CreateDateColumn()
+  createdAt: Date;
 
-
+  @UpdateDateColumn()
+  updatedAt: Date;
 }
