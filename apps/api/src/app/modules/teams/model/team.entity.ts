@@ -1,18 +1,17 @@
-import { Column, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn } from "typeorm";
-import { Match } from "../../championships/modules/matchs/model/match.entity";
+import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
+import { Player } from '../../players/model/player.entity';
 
 @Entity()
 export class Team {
   @PrimaryGeneratedColumn('uuid')
-  id:string;
+  id: string;
 
   @Column('varchar')
-  country:string;
+  country: string;
 
   @Column('varchar')
-  logoFileName:string;
+  logoFileName: string;
 
-
-
-
+  @OneToMany(() => Player, (players) => players.team)
+  players: Player;
 }
