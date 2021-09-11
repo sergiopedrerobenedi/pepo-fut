@@ -65,7 +65,6 @@ export class CreateTeamDto {
   @ApiProperty({
     type: ChampionshipResponseDto,
     required: true,
-    example: new ChampionshipResponseDto(),
   })
   @Type(() => ChampionshipResponseDto)
   @ValidateNested()

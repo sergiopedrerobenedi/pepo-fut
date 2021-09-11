@@ -7,7 +7,7 @@ export class ChampionshipResponseDto {
     required: true,
     type: String,
     description: "The championship's id",
-    example: 'Premier League',
+    example: 'cc8cecf8-56af-4bd2-82d1-1ec01a3fc225',
   })
   readonly id: string;
 
