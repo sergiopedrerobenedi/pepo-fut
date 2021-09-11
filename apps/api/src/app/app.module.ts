@@ -9,6 +9,7 @@ import { Player } from './modules/players/model/player.entity';
 import { PlayerPosition } from './modules/players/modules/players-positions/model/player-position.entity';
 import { PlayersModule } from './modules/players/players.module';
 import { Team } from './modules/teams/model/team.entity';
+import { TeamsModule } from './modules/teams/teams.module';
 import { User } from './modules/users/model/user.entity';
 import { UsersModule } from './modules/users/users.module';
 
@@ -28,6 +29,7 @@ import { UsersModule } from './modules/users/users.module';
     UsersModule,
     ChampionshipsModule,
     PlayersModule,
+    TeamsModule,
   ],
   controllers: [],
   providers: [],

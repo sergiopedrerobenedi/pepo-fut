@@ -1,4 +1,5 @@
 import { Column, CreateDateColumn, Entity, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
+import { Team } from '../../teams/model/team.entity';
 import { Round } from '../modules/rounds/model/round.entity';
 
 @Entity()
@@ -17,6 +18,9 @@ export class Championship {
 
   @OneToMany(() => Round, (round) => round.championship, { cascade: true, eager: true })
   rounds: Round[];
+
+  @OneToMany(() => Team, (teams) => teams.championship, { eager: true, cascade: true })
+  teams: Team[];
 
   @Column('varchar')
   season: string;

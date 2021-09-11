@@ -1,5 +1,5 @@
-import { BestFootEnum } from '../../../enums/best-foot.enum';
-import { PlayerPositionEnum } from '../enums/player-position.enum';
+import { BestFootEnum } from '../enums/best-foot.enum';
+import { PlayerPositionEnum } from '../modules/players-positions/enums/player-position.enum';
 
 export class PlayerQueryParams {
   name: string;

@@ -3,11 +3,11 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, SelectQueryBuilder, Transaction, TransactionRepository } from 'typeorm';
 import { ICrudServices } from '../../common/classes/crud-services.interface';
 import { Pagination } from '../../common/classes/pagination.class';
+import { PlayerQueryParams } from './classes/player-query-params.class';
 import { CreatePlayerDto } from './dto/create-player.dto';
 import { PlayerResponseDto } from './dto/player-response.dto';
 import { UpdatePlayerDto } from './dto/update-player.dto';
 import { Player } from './model/player.entity';
-import { PlayerQueryParams } from './modules/players-positions/classes/player-query-params.class';
 
 @Injectable()
 export class PlayersService implements ICrudServices<Player, PlayerResponseDto, CreatePlayerDto, UpdatePlayerDto> {

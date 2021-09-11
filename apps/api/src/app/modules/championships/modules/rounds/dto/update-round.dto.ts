@@ -1,6 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { IsInt, IsOptional, IsString, IsUUID } from 'class-validator';
-import { ChampionshipResponseDto } from '../../../dto/championship-response.dto';
 
 export class UpdateRoundDto {
   @ApiProperty({
@@ -24,6 +23,4 @@ export class UpdateRoundDto {
   @IsString()
   @IsOptional()
   comment?: string;
-
-  championship: ChampionshipResponseDto;
 }

@@ -14,11 +14,11 @@ import {
 } from '@nestjs/common';
 import { ApiBody, ApiOperation, ApiQuery, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { Pagination } from '../../common/classes/pagination.class';
+import { PlayerQueryParams } from './classes/player-query-params.class';
 import { CreatePlayerDto } from './dto/create-player.dto';
 import { PlayerResponseDto } from './dto/player-response.dto';
 import { UpdatePlayerDto } from './dto/update-player.dto';
 import { BestFootEnum } from './enums/best-foot.enum';
-import { PlayerQueryParams } from './modules/players-positions/classes/player-query-params.class';
 import { PlayerPositionEnum } from './modules/players-positions/enums/player-position.enum';
 import { PlayersService } from './players.service';
 
