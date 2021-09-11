@@ -1,21 +1,20 @@
-import { ApiProperty } from "@nestjs/swagger";
-import { IsEmail, IsString } from "class-validator";
+import { ApiProperty } from '@nestjs/swagger';
+import { IsEmail, IsString } from 'class-validator';
 
 export class SignUpDto {
   @ApiProperty({
     required: true,
     type: String,
-    description: 'The user\'s username',
+    description: "The user's username",
     example: 'test',
   })
   @IsString()
   readonly username: string;
 
-
   @ApiProperty({
     required: true,
     type: String,
-    description: 'The user\'s password ',
+    description: "The user's password ",
     example: 'test',
   })
   @IsString()
@@ -24,27 +23,27 @@ export class SignUpDto {
   @ApiProperty({
     required: true,
     type: String,
-    description: 'The user\'s first name ',
+    description: "The user's first name ",
     example: 'test',
   })
   @IsString()
-  readonly firstName:string;
+  readonly firstName: string;
 
   @ApiProperty({
     required: true,
     type: String,
-    description: 'The user\'s last name ',
+    description: "The user's last name ",
     example: 'test',
   })
   @IsString()
-  readonly lastName:string;
+  readonly lastName: string;
 
   @ApiProperty({
     required: true,
     type: String,
-    description: 'The user\'s e-mail ',
-    example: 'test',
+    description: "The user's e-mail ",
+    example: 'test@test.com',
   })
   @IsEmail()
-  email:string;
+  email: string;
 }

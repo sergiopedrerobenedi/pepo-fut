@@ -1,4 +1,128 @@
-import { Injectable } from "@nestjs/common";
+import { Injectable } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository, SelectQueryBuilder, Transaction, TransactionRepository } from 'typeorm';
+import { Pagination } from '../../common/classes/pagination.class';
+import { ChampionshipResponseDto } from './dto/championship-response.dto';
+import { CreateChampionshipDto } from './dto/create-championship.dto';
+import { UpdateChampionshipDto } from './dto/update-championship.dto';
+import { Championship } from './model/championship.entity';
 
 @Injectable()
-export class ChampionshipsService {}
+export class ChampionshipsService {
+  constructor(@InjectRepository(Championship) private readonly repository: Repository<Championship>) {}
+
+  getAll(queryParams): Promise<Pagination<ChampionshipResponseDto>> {
+    return this.fetchAll(queryParams).then(
+      (paginationResult: Pagination<Championship>) =>
+        new Pagination<ChampionshipResponseDto>(
+          paginationResult.items.map((championship) => this.fromChampionshipToChampionshipResponse(championship)),
+          paginationResult.count,
+        ),
+    );
+  }
+
+  getById(id: string): Promise<ChampionshipResponseDto> {
+    return this.fetchById(id).then((championship: Championship) => {
+      if (championship) {
+        return this.fromChampionshipToChampionshipResponse(championship);
+      }
+    });
+  }
+
+  create(createChampionshipDto: CreateChampionshipDto): Promise<void> {
+    return this.repository
+      .save(this.repository.create(createChampionshipDto))
+      .then(() => {
+        return;
+      })
+      .catch((error) => {
+        throw new Error(error);
+      });
+  }
+
+  @Transaction()
+  async updateById(
+    id: string,
+    newChampionshipData: UpdateChampionshipDto,
+    @TransactionRepository(Championship) repository?: Repository<Championship>,
+  ): Promise<void> {
+    const dbChampionship: Championship = await this.fetchById(id);
+    return repository
+      .save({ ...dbChampionship, ...newChampionshipData })
+      .catch((error) => {
+        throw new Error(error);
+      })
+      .then(() => {
+        return;
+      });
+  }
+
+  patchById(id: string, newChampionshipData: CreateChampionshipDto) {
+    return this.repository
+      .update(
+        { id },
+        {
+          country: newChampionshipData.country,
+          description: newChampionshipData.description,
+          name: newChampionshipData.name,
+          season: newChampionshipData.season,
+        },
+      )
+      .then(() => {
+        return;
+      })
+      .catch((error) => {
+        throw new Error(error);
+      });
+  }
+
+  deleteById(id): Promise<void> {
+    return this.repository
+      .delete(id)
+      .then(() => {
+        return;
+      })
+      .catch((error) => {
+        throw new Error(error);
+      });
+  }
+
+  private fetchAll(queryParams): Promise<Pagination<Championship>> {
+    const take = queryParams.limit || 10;
+    const skip = queryParams.offset || 0;
+    const { name, description, country, season } = queryParams;
+    const query: SelectQueryBuilder<Championship> = this.repository
+      .createQueryBuilder()
+      .where('1=1')
+      .take(take)
+      .skip(skip);
+    if (name) {
+      query.andWhere('name = :name', { name });
+    }
+    if (description) {
+      query.andWhere('description = :description', { description });
+    }
+    if (country) {
+      query.andWhere('country = :country', { country });
+    }
+    if (season) {
+      query.andWhere('season = :season', { season });
+    }
+
+    return query.getManyAndCount().then(([items, count]) => {
+      return new Pagination(items, count);
+    });
+  }
+
+  private fetchById(id): Promise<Championship> {
+    return this.repository.findOne({ where: { id } }).catch((error) => {
+      throw new Error(error);
+    });
+  }
+
+  private fromChampionshipToChampionshipResponse(championship: Championship): ChampionshipResponseDto {
+    return {
+      ...championship,
+    };
+  }
+}

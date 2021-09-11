@@ -1,22 +1,31 @@
-import { Column, Entity, ManyToOne, OneToMany, PrimaryColumn, PrimaryGeneratedColumn } from "typeorm";
-import { Championship } from "../../../model/championship.entity";
-import { Match } from "../../matchs/model/match.entity";
+import { Column, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
+import { Championship } from '../../../model/championship.entity';
+import { Match } from '../../matchs/model/match.entity';
 
 @Entity()
 export class Round {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
-  @PrimaryColumn()
-  number:number;
+  @Column()
+  number: number;
 
-  @Column('varchar', {default:null})
+  @Column('varchar', { default: null })
   comment?: string;
 
-  @ManyToOne(type => Championship, championship => championship.rounds)
-  championship:Championship;
+  @ManyToOne(() => Championship, (championship) => championship.rounds, {
+    onDelete: 'CASCADE',
+    createForeignKeyConstraints: true,
+    orphanedRowAction: 'delete',
+  })
+  championship: Championship;
 
-  @OneToMany(type => Match, match => match.round)
-  matchs:Match;
+  @OneToMany((type) => Match, (match) => match.round)
+  matchs: Match;
 
+  constructor(id: string, number: number, comment?: string) {
+    this.id = id;
+    this.number = number;
+    this.comment = comment;
+  }
 }
