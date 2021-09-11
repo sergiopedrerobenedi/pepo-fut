@@ -9,6 +9,7 @@ import {
   UpdateDateColumn,
 } from 'typeorm';
 import { Team } from '../../teams/model/team.entity';
+import { BestFootEnum } from '../enums/best-foot.enum';
 import { PlayerPosition } from '../modules/players-positions/model/player-position.entity';
 
 @Entity()
@@ -37,10 +38,10 @@ export class Player {
   @Column('int4')
   weightKg: number;
 
-  @Column('varchar')
-  bestFoot: string;
+  @Column('enum', { enum: BestFootEnum })
+  bestFoot: BestFootEnum;
 
-  @ManyToMany(() => PlayerPosition)
+  @ManyToMany(() => PlayerPosition, { eager: true })
   @JoinTable()
   positions: PlayerPosition[];
 
