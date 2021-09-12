@@ -1,16 +1,10 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { getMetadataArgsStorage } from 'typeorm';
 import { AuthModule } from './modules/auth/auth.module';
 import { ChampionshipsModule } from './modules/championships/championships.module';
-import { Championship } from './modules/championships/model/championship.entity';
-import { Match } from './modules/championships/modules/matchs/model/match.entity';
-import { Round } from './modules/championships/modules/rounds/model/round.entity';
-import { Player } from './modules/players/model/player.entity';
-import { PlayerPosition } from './modules/players/modules/players-positions/model/player-position.entity';
 import { PlayersModule } from './modules/players/players.module';
-import { Team } from './modules/teams/model/team.entity';
 import { TeamsModule } from './modules/teams/teams.module';
-import { User } from './modules/users/model/user.entity';
 import { UsersModule } from './modules/users/users.module';
 
 @Module({
@@ -24,7 +18,7 @@ import { UsersModule } from './modules/users/users.module';
       database: 'pepo_fut',
       synchronize: true,
       logging: false,
-      entities: [User, Championship, Match, Round, Team, PlayerPosition, Player],
+      entities: getMetadataArgsStorage().tables.map((tbl) => tbl.target),
     }),
     UsersModule,
     ChampionshipsModule,
