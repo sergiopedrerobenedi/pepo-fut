@@ -1,10 +1,15 @@
 version: '3.8'
 services:
   api:
-    container_name: pepo-fut-api
+    container_name: pepo-fut
+    build:
+      context: .
+      dockerfile: ./Dockerfile
     image: pepo-fut-api
     ports:
-      - '8081:3333'
+      - '80:3333'
+    environment:
+      NODE_ENV: production
     depends_on:
       - db
   db:
