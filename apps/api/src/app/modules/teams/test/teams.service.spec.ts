@@ -1,14 +1,12 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { initialiseTestTransactions } from 'typeorm-test-transactions';
 import { BestFootEnum } from '../../players/enums/best-foot.enum';
 import { PLAYER_POSITIONS } from '../../players/modules/players-positions/mocks/players-positions.mocks';
 import { Team } from '../model/team.entity';
 import { TeamsService } from '../teams.service';
 import { GET_ALL_TEAMS_MOCK } from './mocks/teams.mocks';
 
-initialiseTestTransactions();
 describe('TeamsService', () => {
   let service: TeamsService;
   let repo: Repository<Team>;

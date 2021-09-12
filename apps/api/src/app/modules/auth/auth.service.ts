@@ -1,13 +1,13 @@
-import { Injectable } from "@nestjs/common";
-import { User } from "../users/model/user.entity";
-import { UsersService } from "../users/users.service";
-import { AuthDto } from "./dto/auth.dto";
-import { compare } from "bcryptjs";
-import { Token } from "./dto/interfaces/token.interface";
-import { JwtPayload } from "./dto/interfaces/jwt-payload.interface";
+import { ConflictException, Injectable } from '@nestjs/common';
+import { compare } from 'bcryptjs';
 import * as jwt from 'jsonwebtoken';
-import { TOKEN_EXPIRE_TIME, TOKEN_SECRET } from "./auth.constants";
-import { SignUpDto } from "./dto/sign-up.dto";
+import { User } from '../users/model/user.entity';
+import { UsersService } from '../users/users.service';
+import { TOKEN_EXPIRE_TIME, TOKEN_SECRET } from './auth.constants';
+import { AuthDto } from './dto/auth.dto';
+import { JwtPayload } from './dto/interfaces/jwt-payload.interface';
+import { Token } from './dto/interfaces/token.interface';
+import { SignUpDto } from './dto/sign-up.dto';
 
 @Injectable()
 export class AuthService {
@@ -24,13 +24,9 @@ export class AuthService {
       return Promise.reject();
     }
     const jwtPayload: JwtPayload = new JwtPayload(user.id, user.username);
-    const token: string = jwt.sign(
-      JSON.parse(JSON.stringify(jwtPayload)),
-      TOKEN_SECRET,
-      {
-        expiresIn: TOKEN_EXPIRE_TIME,
-      },
-    );
+    const token: string = jwt.sign(JSON.parse(JSON.stringify(jwtPayload)), TOKEN_SECRET, {
+      expiresIn: TOKEN_EXPIRE_TIME,
+    });
     return new Token(token, TOKEN_EXPIRE_TIME);
   }
 
@@ -40,7 +36,13 @@ export class AuthService {
     return user !== undefined;
   }
 
-  signUp(signUpDto:SignUpDto): Promise<void> {
-    return this.usersService.create(signUpDto).then(() => {return ;});
+  async signUp(signUpDto: SignUpDto): Promise<void> {
+    const dbUser = await this.usersService.findByUsername(signUpDto.username);
+    if (dbUser) {
+      throw new ConflictException();
+    }
+    return this.usersService.create(signUpDto).then(() => {
+      return;
+    });
   }
 }

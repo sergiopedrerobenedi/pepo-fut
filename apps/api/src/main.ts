@@ -29,6 +29,7 @@ async function bootstrap() {
   SwaggerModule.setup(ApiService.getDocsEndpoint(), app, document);
 
   await app.listen(port, () => {
+    Logger.log(`¡¡¡ Swagger DOC is available at http://localhost:${port}/${ApiService.getDocsEndpoint()} !!!`);
     Logger.log(`Listening at http://localhost:${port}/${globalPrefix}`);
   });
 }

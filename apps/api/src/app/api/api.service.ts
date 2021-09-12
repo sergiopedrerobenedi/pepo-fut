@@ -1,14 +1,10 @@
 import { Injectable } from '@nestjs/common';
 import { DocumentBuilder, OpenAPIObject } from '@nestjs/swagger';
-import * as fs from 'fs';
-import * as mkdirp from 'mkdirp';
-import * as path from 'path';
 import * as ApiConstants from './api.constants';
 
 @Injectable()
 export class ApiService {
-
-  static buildDocument(): Pick<OpenAPIObject,'openapi' | 'components' | 'externalDocs' | 'info' | 'servers' | 'tags'> {
+  static buildDocument(): Pick<OpenAPIObject, 'openapi' | 'components' | 'externalDocs' | 'info' | 'servers' | 'tags'> {
     return new DocumentBuilder()
       .setTitle(ApiConstants.API_TITLE)
       .setDescription(ApiConstants.API_DESCRIPTION)

@@ -28,8 +28,7 @@
     "rxjs": "~7.3.0",
     "swagger-ui-express": "^4.1.6",
     "tslib": "^2.3.1",
-    "typeorm": "^0.2.37",
-    "typeorm-test-transactions": "^1.14.2"
+    "typeorm": "^0.2.37"
   },
   "devDependencies": {
     "@nestjs/schematics": "^8.0.3",
@@ -54,6 +53,7 @@
     "eslint-config-prettier": "8.3.0",
     "jest": "27.1.1",
     "prettier": "^2.4.0",
+    "supertest": "^6.1.6",
     "ts-jest": "27.0.5",
     "typescript": "~4.4.2"
   },

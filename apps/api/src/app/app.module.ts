@@ -23,7 +23,7 @@ import { UsersModule } from './modules/users/users.module';
       password: 'postgres',
       database: 'pepo_fut',
       synchronize: true,
-      logging: true,
+      logging: false,
       entities: [User, Championship, Match, Round, Team, PlayerPosition, Player],
     }),
     UsersModule,
