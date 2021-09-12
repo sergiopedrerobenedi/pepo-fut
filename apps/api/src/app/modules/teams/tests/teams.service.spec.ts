@@ -210,7 +210,7 @@ describe('TeamsService', () => {
           players: [],
           president: 'Sergio Pedrero',
           stadium: 'La Romareda',
-          foundationDate: new Date(),
+          foundationDate: new Date('2021-09-12T13:51:17.506Z'),
         }),
       ).rejects.toThrow();
       expect(repoSpy).toBeCalledWith(
@@ -222,7 +222,7 @@ describe('TeamsService', () => {
           players: [],
           president: 'Sergio Pedrero',
           stadium: 'La Romareda',
-          foundationDate: new Date(),
+          foundationDate: new Date('2021-09-12T13:51:17.506Z'),
         },
       );
       expect(repoSpy).toBeCalledTimes(1);

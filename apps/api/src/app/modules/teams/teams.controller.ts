@@ -84,7 +84,7 @@ export class TeamsController {
     required: false,
     type: String,
   })
-  getAll(@Query() queryParams: TeamsQueryParams): Promise<Pagination<TeamResponseDto>> {
+  getAll(@Query() queryParams?: TeamsQueryParams): Promise<Pagination<TeamResponseDto>> {
     return this.teamsService.getAll(queryParams);
   }
 
@@ -181,9 +181,7 @@ export class TeamsController {
     description: 'The team to patch was not found',
   })
   async patchById(@Param('id') id: string, @Body() newPlayerData: CreateTeamDto): Promise<void> {
-    const team: TeamResponseDto = await this.teamsService.getById(id).catch((error) => {
-      throw new InternalServerErrorException(error.toString());
-    });
+    const team: TeamResponseDto = await this.teamsService.getById(id);
     if (!team) {
       throw new NotFoundException();
     }
@@ -209,10 +207,8 @@ export class TeamsController {
     status: HttpStatus.INTERNAL_SERVER_ERROR,
     description: 'An error has occurred while trying to delete team',
   })
-  async deleteById(@Param('id') id: string) {
-    const team: TeamResponseDto = await this.teamsService.getById(id).catch((error) => {
-      throw new InternalServerErrorException(error.toString());
-    });
+  async deleteById(@Param('id') id: string): Promise<void> {
+    const team: TeamResponseDto = await this.teamsService.getById(id);
     if (!team) {
       throw new NotFoundException();
     }
