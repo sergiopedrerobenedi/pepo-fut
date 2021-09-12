@@ -13,7 +13,6 @@ export class MatchResponseDto {
   @ApiProperty({
     type: RoundResponseDto,
     required: true,
-    example: new RoundResponseDto(),
   })
   round: RoundResponseDto;
 
@@ -27,14 +26,12 @@ export class MatchResponseDto {
   @ApiProperty({
     type: TeamResponseDto,
     required: true,
-    example: new TeamResponseDto(),
   })
   localTeam: TeamResponseDto;
 
   @ApiProperty({
     type: TeamResponseDto,
     required: true,
-    example: new TeamResponseDto(),
   })
   awayTeam: TeamResponseDto;
 }

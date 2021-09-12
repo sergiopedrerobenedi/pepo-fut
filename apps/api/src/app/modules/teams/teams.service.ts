@@ -72,7 +72,6 @@ export class TeamsService implements ICrudServices<Team, TeamResponseDto, Create
       .where('1=1')
       .take(take)
       .skip(skip)
-      .leftJoinAndSelect('team.championship', 'championship')
       .leftJoinAndSelect('team.players', 'players');
 
     if (name) {
@@ -80,9 +79,6 @@ export class TeamsService implements ICrudServices<Team, TeamResponseDto, Create
     }
     if (foundationDate) {
       query.andWhere('foundationDate = :foundationDate', { foundationDate });
-    }
-    if (championshipName) {
-      query.andWhere('championship.name = :championshipName', { championshipName });
     }
     if (nationality) {
       query.andWhere('nationality = :nationality', { nationality });

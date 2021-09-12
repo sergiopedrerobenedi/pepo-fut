@@ -101,10 +101,14 @@ export class ChampionshipsService
     const skip = queryParams.offset || 0;
     const { name, description, country, season } = queryParams;
     const query: SelectQueryBuilder<Championship> = this.repository
-      .createQueryBuilder()
+      .createQueryBuilder('championship')
       .where('1=1')
       .take(take)
-      .skip(skip);
+      .skip(skip)
+      .leftJoinAndSelect('championship.rounds', 'rounds')
+      .leftJoinAndSelect('rounds.matchs', 'matchs')
+      .leftJoinAndSelect('matchs.localTeam', 'localTeam')
+      .leftJoinAndSelect('matchs.awayTeam', 'awayTeam');
     if (name) {
       query.andWhere('name = :name', { name });
     }

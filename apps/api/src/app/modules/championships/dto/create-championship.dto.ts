@@ -32,10 +32,11 @@ export class CreateChampionshipDto {
   @IsString()
   readonly country: string;
 
-  @ApiProperty({ type: CreateRoundDto, isArray: true })
+  @ApiProperty({ type: CreateRoundDto, isArray: true, required: false })
   @IsArray()
   @Type(() => CreateRoundDto)
-  readonly rounds: CreateRoundDto[];
+  @IsOptional()
+  readonly rounds?: CreateRoundDto[];
 
   @ApiProperty({
     required: true,

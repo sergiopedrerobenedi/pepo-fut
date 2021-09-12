@@ -28,8 +28,8 @@ export class Round {
   })
   championship: Championship;
 
-  @OneToMany((type) => Match, (match) => match.round)
-  matchs: Match;
+  @OneToMany((type) => Match, (match) => match.round, { eager: true, cascade: ['insert', 'update'] })
+  matchs: Match[];
 
   @CreateDateColumn()
   createdAt: Date;

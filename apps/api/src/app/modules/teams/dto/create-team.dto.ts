@@ -1,7 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { Type } from 'class-transformer';
 import { IsString, ValidateNested } from 'class-validator';
-import { ChampionshipResponseDto } from '../../championships/dto/championship-response.dto';
 import { PlayerResponseDto } from '../../players/dto/player-response.dto';
 import { Player } from '../../players/model/player.entity';
 
@@ -61,12 +60,4 @@ export class CreateTeamDto {
   @Type(() => Player)
   @ValidateNested({ each: true })
   players: PlayerResponseDto[];
-
-  @ApiProperty({
-    type: ChampionshipResponseDto,
-    required: true,
-  })
-  @Type(() => ChampionshipResponseDto)
-  @ValidateNested()
-  championship: ChampionshipResponseDto;
 }

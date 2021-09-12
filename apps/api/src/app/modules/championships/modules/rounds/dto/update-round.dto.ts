@@ -1,5 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { IsInt, IsOptional, IsString, IsUUID } from 'class-validator';
+import { UpdateMatchDto } from '../../matchs/dto/update-match.dto';
 
 export class UpdateRoundDto {
   @ApiProperty({
@@ -23,4 +24,11 @@ export class UpdateRoundDto {
   @IsString()
   @IsOptional()
   comment?: string;
+
+  @ApiProperty({
+    required: true,
+    type: UpdateMatchDto,
+    isArray: true,
+  })
+  matchs: UpdateMatchDto[];
 }

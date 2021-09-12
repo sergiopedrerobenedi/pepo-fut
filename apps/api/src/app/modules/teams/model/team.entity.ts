@@ -1,13 +1,4 @@
-import {
-  Column,
-  CreateDateColumn,
-  Entity,
-  ManyToOne,
-  OneToMany,
-  PrimaryGeneratedColumn,
-  UpdateDateColumn,
-} from 'typeorm';
-import { Championship } from '../../championships/model/championship.entity';
+import { Column, CreateDateColumn, Entity, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
 import { Player } from '../../players/model/player.entity';
 
 @Entity()
@@ -33,11 +24,8 @@ export class Team {
   @Column('date')
   foundationDate: Date;
 
-  @OneToMany(() => Player, (players) => players.team)
+  @OneToMany(() => Player, (players) => players.team, { eager: true, cascade: ['insert', 'update'] })
   players: Player[];
-
-  @ManyToOne(() => Championship, (championship) => championship)
-  championship: Championship;
 
   @CreateDateColumn()
   createdAt: Date;

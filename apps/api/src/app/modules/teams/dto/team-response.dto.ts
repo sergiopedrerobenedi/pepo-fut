@@ -1,5 +1,4 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { ChampionshipResponseDto } from '../../championships/dto/championship-response.dto';
 import { PlayerResponseDto } from '../../players/dto/player-response.dto';
 
 export class TeamResponseDto {
@@ -51,11 +50,4 @@ export class TeamResponseDto {
     isArray: true,
   })
   players: PlayerResponseDto[];
-
-  @ApiProperty({
-    type: ChampionshipResponseDto,
-    required: true,
-    example: new ChampionshipResponseDto(),
-  })
-  championship: ChampionshipResponseDto;
 }
