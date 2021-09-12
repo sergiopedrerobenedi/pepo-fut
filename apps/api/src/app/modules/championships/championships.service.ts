@@ -3,6 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, SelectQueryBuilder, Transaction, TransactionRepository } from 'typeorm';
 import { ICrudServices } from '../../common/classes/crud-services.interface';
 import { Pagination } from '../../common/classes/pagination.class';
+import { ChampionshipQueryParams } from './classes/championships-query-params.class';
 import { ChampionshipResponseDto } from './dto/championship-response.dto';
 import { CreateChampionshipDto } from './dto/create-championship.dto';
 import { UpdateChampionshipDto } from './dto/update-championship.dto';
@@ -10,11 +11,18 @@ import { Championship } from './model/championship.entity';
 
 @Injectable()
 export class ChampionshipsService
-  implements ICrudServices<Championship, ChampionshipResponseDto, CreateChampionshipDto, UpdateChampionshipDto>
+  implements
+    ICrudServices<
+      Championship,
+      ChampionshipResponseDto,
+      CreateChampionshipDto,
+      UpdateChampionshipDto,
+      ChampionshipQueryParams
+    >
 {
   constructor(@InjectRepository(Championship) private readonly repository: Repository<Championship>) {}
 
-  getAll(queryParams): Promise<Pagination<ChampionshipResponseDto>> {
+  getAll(queryParams?: ChampionshipQueryParams): Promise<Pagination<ChampionshipResponseDto>> {
     return this.fetchAll(queryParams).then(
       (paginationResult: Pagination<Championship>) =>
         new Pagination<ChampionshipResponseDto>(
@@ -96,10 +104,9 @@ export class ChampionshipsService
     };
   }
 
-  private fetchAll(queryParams): Promise<Pagination<Championship>> {
-    const take = queryParams.limit || 10;
-    const skip = queryParams.offset || 0;
-    const { name, description, country, season } = queryParams;
+  private fetchAll(queryParams?: ChampionshipQueryParams): Promise<Pagination<Championship>> {
+    const take = queryParams?.limit || 10;
+    const skip = queryParams?.offset || 0;
     const query: SelectQueryBuilder<Championship> = this.repository
       .createQueryBuilder('championship')
       .where('1=1')
@@ -109,17 +116,20 @@ export class ChampionshipsService
       .leftJoinAndSelect('rounds.matchs', 'matchs')
       .leftJoinAndSelect('matchs.localTeam', 'localTeam')
       .leftJoinAndSelect('matchs.awayTeam', 'awayTeam');
-    if (name) {
-      query.andWhere('name = :name', { name });
-    }
-    if (description) {
-      query.andWhere('description = :description', { description });
-    }
-    if (country) {
-      query.andWhere('country = :country', { country });
-    }
-    if (season) {
-      query.andWhere('season = :season', { season });
+    if (queryParams) {
+      const { name, description, country, season } = queryParams;
+      if (name) {
+        query.andWhere('name = :name', { name });
+      }
+      if (description) {
+        query.andWhere('description = :description', { description });
+      }
+      if (country) {
+        query.andWhere('country = :country', { country });
+      }
+      if (season) {
+        query.andWhere('season = :season', { season });
+      }
     }
 
     return query.getManyAndCount().then(([items, count]) => {

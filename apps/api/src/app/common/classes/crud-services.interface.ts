@@ -1,8 +1,8 @@
 import { Repository } from 'typeorm';
 import { Pagination } from './pagination.class';
 
-export interface ICrudServices<E, D, C, U> {
-  getAll(queryParams): Promise<Pagination<D>>;
+export interface ICrudServices<E, D, C, U, P> {
+  getAll(queryParams?: P): Promise<Pagination<D>>;
   getById(id: string): Promise<D>;
   create(createDto: C): Promise<void>;
   updateById(id, updateDto: U, repository?: Repository<E>): Promise<void>;

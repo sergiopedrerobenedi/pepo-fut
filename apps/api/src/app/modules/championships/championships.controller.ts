@@ -69,13 +69,13 @@ export class ChampionshipsController {
     name: 'country',
     description: "The championship's country if you want to filter results",
     required: false,
-    type: Number,
+    type: String,
   })
   @ApiQuery({
     name: 'season',
     description: "The championship's season if you want to filter results",
     required: false,
-    type: Number,
+    type: String,
   })
   getAll(@Query() queryParams): Promise<Pagination<ChampionshipResponseDto>> {
     return this.championshipService.getAll(queryParams);

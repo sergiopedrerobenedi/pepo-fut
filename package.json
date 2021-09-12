@@ -19,6 +19,7 @@
     "bcryptjs": "^2.4.3",
     "class-transformer": "^0.4.0",
     "class-validator": "^0.13.1",
+    "jest-mock-extended": "^2.0.2-beta2",
     "jsonwebtoken": "^8.5.1",
     "passport": "^0.4.1",
     "passport-jwt": "^4.0.0",
@@ -27,7 +28,8 @@
     "rxjs": "~7.3.0",
     "swagger-ui-express": "^4.1.6",
     "tslib": "^2.3.1",
-    "typeorm": "^0.2.37"
+    "typeorm": "^0.2.37",
+    "typeorm-test-transactions": "^1.14.2"
   },
   "devDependencies": {
     "@nestjs/schematics": "^8.0.3",

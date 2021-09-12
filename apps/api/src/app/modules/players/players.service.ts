@@ -10,10 +10,12 @@ import { UpdatePlayerDto } from './dto/update-player.dto';
 import { Player } from './model/player.entity';
 
 @Injectable()
-export class PlayersService implements ICrudServices<Player, PlayerResponseDto, CreatePlayerDto, UpdatePlayerDto> {
+export class PlayersService
+  implements ICrudServices<Player, PlayerResponseDto, CreatePlayerDto, UpdatePlayerDto, PlayerQueryParams>
+{
   constructor(@InjectRepository(Player) private readonly repository: Repository<Player>) {}
 
-  getAll(queryParams: PlayerQueryParams): Promise<Pagination<PlayerResponseDto>> {
+  getAll(queryParams?: PlayerQueryParams): Promise<Pagination<PlayerResponseDto>> {
     return this.fetchAll(queryParams).then(
       (paginationResult: Pagination<Player>) =>
         new Pagination<PlayerResponseDto>(
@@ -91,10 +93,10 @@ export class PlayersService implements ICrudServices<Player, PlayerResponseDto, 
     return { ...entity };
   }
 
-  private fetchAll(queryParams: PlayerQueryParams): Promise<Pagination<Player>> {
-    const take = queryParams.limit || 10;
-    const skip = queryParams.offset || 0;
-    const { name, surname, birthday, bestFoot, heightCm, injured, nationality, positions, weightKg } = queryParams;
+  private fetchAll(queryParams?: PlayerQueryParams): Promise<Pagination<Player>> {
+    const take = queryParams?.limit || 10;
+    const skip = queryParams?.offset || 0;
+
     const query: SelectQueryBuilder<Player> = this.repository
       .createQueryBuilder('player')
       .where('1=1')
@@ -102,34 +104,37 @@ export class PlayersService implements ICrudServices<Player, PlayerResponseDto, 
       .skip(skip)
       .leftJoinAndSelect('player.positions', 'positions');
 
-    if (name) {
-      query.andWhere('name = :name', { name });
-    }
-    if (surname) {
-      query.andWhere('surname = :surname', { surname });
-    }
-    if (birthday) {
-      query.andWhere('birthday = :birthday', { birthday });
-    }
-    if (bestFoot) {
-      query.andWhere('bestFoot = :bestFoot', { bestFoot });
-    }
-    if (heightCm) {
-      query.andWhere('bestFoot = :bestFoot', { bestFoot });
-    }
-    if (injured !== null && Boolean(injured)) {
-      query.andWhere('bestFoot = :bestFoot', { bestFoot });
-    }
-    if (nationality) {
-      query.andWhere('nationality = :nationality', { nationality });
-    }
-    if (positions) {
-      const positionsWhereClause = positions.map((position) => `'${position}'`).join(',');
-      query.andWhere(`positions.positionAbbreviation IN (${positionsWhereClause})`);
-    }
+    if (queryParams) {
+      const { name, surname, birthday, bestFoot, heightCm, injured, nationality, positions, weightKg } = queryParams;
+      if (name) {
+        query.andWhere('name = :name', { name });
+      }
+      if (surname) {
+        query.andWhere('surname = :surname', { surname });
+      }
+      if (birthday) {
+        query.andWhere('birthday = :birthday', { birthday });
+      }
+      if (bestFoot) {
+        query.andWhere('bestFoot = :bestFoot', { bestFoot });
+      }
+      if (heightCm) {
+        query.andWhere('bestFoot = :bestFoot', { bestFoot });
+      }
+      if (injured !== null && Boolean(injured)) {
+        query.andWhere('bestFoot = :bestFoot', { bestFoot });
+      }
+      if (nationality) {
+        query.andWhere('nationality = :nationality', { nationality });
+      }
+      if (positions) {
+        const positionsWhereClause = positions.map((position) => `'${position}'`).join(',');
+        query.andWhere(`positions.positionAbbreviation IN (${positionsWhereClause})`);
+      }
 
-    if (weightKg) {
-      query.andWhere('weightKg = :weightKg', { weightKg });
+      if (weightKg) {
+        query.andWhere('weightKg = :weightKg', { weightKg });
+      }
     }
 
     return query.getManyAndCount().then(([items, count]) => {

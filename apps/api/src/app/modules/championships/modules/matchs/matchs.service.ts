@@ -10,10 +10,12 @@ import { UpdateMatchDto } from './dto/update-match.dto';
 import { Match } from './model/match.entity';
 
 @Injectable()
-export class MatchsService implements ICrudServices<Match, MatchResponseDto, CreateMatchDto, UpdateMatchDto> {
+export class MatchsService
+  implements ICrudServices<Match, MatchResponseDto, CreateMatchDto, UpdateMatchDto, MatchsQueryParams>
+{
   constructor(@InjectRepository(Match) private readonly repository: Repository<Match>) {}
 
-  getAll(queryParams: any): Promise<Pagination<MatchResponseDto>> {
+  getAll(queryParams?: MatchsQueryParams): Promise<Pagination<MatchResponseDto>> {
     return this.fetchAll(queryParams).then(
       (paginationResult: Pagination<Match>) =>
         new Pagination<MatchResponseDto>(
@@ -80,10 +82,10 @@ export class MatchsService implements ICrudServices<Match, MatchResponseDto, Cre
     return { ...entity };
   }
 
-  private fetchAll(queryParams: MatchsQueryParams): Promise<Pagination<Match>> {
-    const take = queryParams.limit || 10;
-    const skip = queryParams.offset || 0;
-    const { awayTeamName, localTeamName, roundNumber, fromDate, toDate } = queryParams;
+  private fetchAll(queryParams?: MatchsQueryParams): Promise<Pagination<Match>> {
+    const take = queryParams?.limit || 10;
+    const skip = queryParams?.offset || 0;
+
     const query: SelectQueryBuilder<Match> = this.repository
       .createQueryBuilder('match')
       .where('1=1')
@@ -93,22 +95,24 @@ export class MatchsService implements ICrudServices<Match, MatchResponseDto, Cre
       .leftJoinAndSelect('match.awayTeam', 'awayTeam')
       .leftJoinAndSelect('match.round', 'round');
 
-    if (fromDate) {
-      query.andWhere('startDate <= :fromDate', { fromDate });
+    if (queryParams) {
+      const { awayTeamName, localTeamName, roundNumber, fromDate, toDate } = queryParams;
+      if (fromDate) {
+        query.andWhere('startDate <= :fromDate', { fromDate });
+      }
+      if (toDate) {
+        query.andWhere('startDate >= :toDate', { toDate });
+      }
+      if (awayTeamName) {
+        query.andWhere('awayTeam.name = :awayTeamName', { awayTeamName });
+      }
+      if (localTeamName) {
+        query.andWhere('localTeam.name = :localTeamName', { localTeamName });
+      }
+      if (roundNumber) {
+        query.andWhere('round.number = :roundNumber', { roundNumber });
+      }
     }
-    if (toDate) {
-      query.andWhere('startDate >= :toDate', { toDate });
-    }
-    if (awayTeamName) {
-      query.andWhere('awayTeam.name = :awayTeamName', { awayTeamName });
-    }
-    if (localTeamName) {
-      query.andWhere('localTeam.name = :localTeamName', { localTeamName });
-    }
-    if (roundNumber) {
-      query.andWhere('round.number = :roundNumber', { roundNumber });
-    }
-
     return query.getManyAndCount().then(([items, count]) => {
       return new Pagination<Match>(items, count);
     });
