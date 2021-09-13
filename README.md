@@ -37,7 +37,7 @@ Run `npm i` script to install project dependencies
 
 ### Deploy
 
-Run `deploy:api` to deploy project locally, with production configuration, into 2 docker containers. One is the PostgreSQL database, named as `pepo-fut-db` and the other is the api server project named as `pepo-fut`. To run this command Docker must be installed previously.
+Run `npm run deploy:api` to deploy project locally, with production configuration, into 2 docker containers. One is the PostgreSQL database, named as `pepo-fut-db` and the other is the api server project named as `pepo-fut`. To run this command Docker must be installed previously.
 This command is executed with the configuration defined in the project's Dockerfile and ups two containers (database and server app) using the docker-compose.yml file.
 
 ### Development server
