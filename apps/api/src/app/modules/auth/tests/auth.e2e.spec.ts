@@ -86,4 +86,41 @@ describe('AuthController (e2e)', () => {
       })
       .expect(401); // responses 401-Unauthorized error
   });
+
+  it('POST /new-token successfully', async () => {
+    const response = await request(app.getHttpServer())
+      .post('/auth/login')
+      .send({
+        username: 'teste2e',
+        password: 'teste2e',
+      })
+      .expect(200); // responses 200-OK
+    const { body } = response;
+    const { refreshToken } = body;
+
+    return request(app.getHttpServer())
+      .post('/auth/new-token')
+      .send({
+        refreshToken,
+      })
+      .expect(201); // responses 401-Unauthorized error
+  });
+
+  it('POST /new-token invalid signature refresh token', async () => {
+    return request(app.getHttpServer())
+      .post('/auth/new-token')
+      .send({
+        refreshToken: 'fail',
+      })
+      .expect(400); // responses 400-Bad request-Invalid signature refresh token
+  });
+
+  it('POST /new-token bad request params', async () => {
+    return request(app.getHttpServer())
+      .post('/auth/new-token')
+      .send({
+        refreshToken: 1233,
+      })
+      .expect(400); // responses 400-Bad request- refreshToken must be a string
+  });
 });
