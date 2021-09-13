@@ -11,8 +11,10 @@ import {
   Post,
   Put,
   Query,
+  UseGuards,
 } from '@nestjs/common';
-import { ApiBody, ApiOperation, ApiQuery, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { AuthGuard } from '@nestjs/passport';
+import { ApiBearerAuth, ApiBody, ApiOperation, ApiQuery, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { Pagination } from '../../../../common/classes/pagination.class';
 import { MatchsQueryParams } from './classes/matchs-query-params.class';
 import { CreateMatchDto } from './dto/create-match.dto';
@@ -22,6 +24,8 @@ import { MatchsService } from './matchs.service';
 
 @ApiTags('matchs')
 @Controller('matchs')
+@UseGuards(AuthGuard('jwt'))
+@ApiBearerAuth()
 export class MatchsController {
   constructor(private readonly matchsService: MatchsService) {}
 
@@ -35,6 +39,14 @@ export class MatchsController {
     description: 'The matchs requested have been recovered',
     type: MatchResponseDto,
     isArray: true,
+  })
+  @ApiResponse({
+    status: HttpStatus.INTERNAL_SERVER_ERROR,
+    description: 'An error has occurred while trying to recover matchs',
+  })
+  @ApiResponse({
+    status: HttpStatus.UNAUTHORIZED,
+    description: 'Unauthorized',
   })
   @ApiQuery({
     name: 'limit',
@@ -100,6 +112,10 @@ export class MatchsController {
     status: HttpStatus.INTERNAL_SERVER_ERROR,
     description: 'An error has occurred while trying to recover match',
   })
+  @ApiResponse({
+    status: HttpStatus.UNAUTHORIZED,
+    description: 'Unauthorized',
+  })
   async getById(@Param('id') id: string): Promise<MatchResponseDto> {
     const result: MatchResponseDto = await this.matchsService.getById(id).catch((error) => {
       throw new InternalServerErrorException(error.toString());
@@ -132,6 +148,10 @@ export class MatchsController {
     status: HttpStatus.INTERNAL_SERVER_ERROR,
     description: 'An error has occurred while trying to create match',
   })
+  @ApiResponse({
+    status: HttpStatus.UNAUTHORIZED,
+    description: 'Unauthorized',
+  })
   create(@Body() createMatchDto: CreateMatchDto): Promise<void> {
     return this.matchsService.create(createMatchDto).catch((error) => {
       throw new InternalServerErrorException(error.toString());
@@ -150,6 +170,10 @@ export class MatchsController {
   @ApiResponse({
     status: HttpStatus.INTERNAL_SERVER_ERROR,
     description: 'An error has occurred while trying to update/create match',
+  })
+  @ApiResponse({
+    status: HttpStatus.UNAUTHORIZED,
+    description: 'Unauthorized',
   })
   updateById(@Param('id') id: string, @Body() newMatchData: UpdateMatchDto): Promise<void> {
     return this.matchsService.updateById(id, newMatchData).catch((error) => {
@@ -173,6 +197,10 @@ export class MatchsController {
   @ApiResponse({
     status: HttpStatus.NOT_FOUND,
     description: 'The match to patch was not found',
+  })
+  @ApiResponse({
+    status: HttpStatus.UNAUTHORIZED,
+    description: 'Unauthorized',
   })
   async patchById(@Param('id') id: string, @Body() newMatchData: CreateMatchDto): Promise<void> {
     const player: MatchResponseDto = await this.matchsService.getById(id).catch((error) => {
@@ -202,6 +230,10 @@ export class MatchsController {
   @ApiResponse({
     status: HttpStatus.INTERNAL_SERVER_ERROR,
     description: 'An error has occurred while trying to delete match',
+  })
+  @ApiResponse({
+    status: HttpStatus.UNAUTHORIZED,
+    description: 'Unauthorized',
   })
   async deleteById(@Param('id') id: string) {
     const match: MatchResponseDto = await this.matchsService.getById(id).catch((error) => {
