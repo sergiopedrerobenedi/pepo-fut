@@ -16,7 +16,7 @@ export const environment: EnvironmentDto = {
     username: 'lnemlxbybwluwt',
     password: '1bdc731c823a281c0f004faff4d7652c2e690e2a6e64eb1e3fb9ce048fb5a9d6',
     database: 'da32nl1j2f1u0b',
-    synchronize: true,
+    synchronize: false,
     logging: false,
     entities: [User, Team, Championship, Round, Match, Player, PlayerPosition],
     extra: {
