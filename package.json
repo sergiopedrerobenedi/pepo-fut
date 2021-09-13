@@ -57,7 +57,7 @@
     "ts-jest": "27.0.5",
     "typescript": "~4.4.2"
   },
-  "description": "This project was generated using [Nx](https://nx.dev).",
+  "description": "Pepo-FUT monorepo, with an API that allows you to manage soccer championships, as well as all related entities (Rounds, Matches, Teams, Players and Clubs).",
   "main": "jest.config.js",
   "repository": {
     "type": "git",
@@ -65,11 +65,20 @@
   },
   "keywords": [
     "Pepo-FUT",
+    "soccer",
+    "football",
+    "player",
+    "teams",
+    "championship",
+    "matchs",
     "nx",
     "NestJS",
     "Angular",
     "TypeORM",
-    "PostgreSQL"
+    "PostgreSQL",
+    "Monorepo",
+    "Docker",
+    "Swagger"
   ],
   "author": "Sergio Pedrero Benedi",
   "bugs": {
