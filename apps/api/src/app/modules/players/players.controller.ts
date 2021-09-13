@@ -11,8 +11,10 @@ import {
   Post,
   Put,
   Query,
+  UseGuards,
 } from '@nestjs/common';
-import { ApiBody, ApiOperation, ApiQuery, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { AuthGuard } from '@nestjs/passport';
+import { ApiBearerAuth, ApiBody, ApiOperation, ApiQuery, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { Pagination } from '../../common/classes/pagination.class';
 import { PlayerQueryParams } from './classes/player-query-params.class';
 import { CreatePlayerDto } from './dto/create-player.dto';
@@ -23,6 +25,8 @@ import { PlayerPositionEnum } from './modules/players-positions/enums/player-pos
 import { PlayersService } from './players.service';
 
 @ApiTags('players')
+@UseGuards(AuthGuard('jwt'))
+@ApiBearerAuth()
 @Controller(`players`)
 export class PlayersController {
   constructor(private readonly playersService: PlayersService) {}
@@ -34,9 +38,17 @@ export class PlayersController {
   })
   @ApiResponse({
     status: HttpStatus.OK,
-    description: 'The championships requested have been recovered',
+    description: 'The players requested have been recovered',
     type: PlayerResponseDto,
     isArray: true,
+  })
+  @ApiResponse({
+    status: HttpStatus.INTERNAL_SERVER_ERROR,
+    description: 'An error has occurred while trying to recover players',
+  })
+  @ApiResponse({
+    status: HttpStatus.UNAUTHORIZED,
+    description: 'Unauthorized',
   })
   @ApiQuery({
     name: 'limit',
@@ -127,6 +139,10 @@ export class PlayersController {
     status: HttpStatus.INTERNAL_SERVER_ERROR,
     description: 'An error has occurred while trying to recover player',
   })
+  @ApiResponse({
+    status: HttpStatus.UNAUTHORIZED,
+    description: 'Unauthorized',
+  })
   async getById(@Param('id') id: string): Promise<PlayerResponseDto> {
     const result: PlayerResponseDto = await this.playersService.getById(id).catch((error) => {
       throw new InternalServerErrorException(error.toString());
@@ -159,6 +175,10 @@ export class PlayersController {
     status: HttpStatus.INTERNAL_SERVER_ERROR,
     description: 'An error has occurred while trying to create player',
   })
+  @ApiResponse({
+    status: HttpStatus.UNAUTHORIZED,
+    description: 'Unauthorized',
+  })
   create(@Body() createPlayerDto: CreatePlayerDto): Promise<void> {
     return this.playersService.create(createPlayerDto).catch((error) => {
       throw new InternalServerErrorException(error.toString());
@@ -177,6 +197,10 @@ export class PlayersController {
   @ApiResponse({
     status: HttpStatus.INTERNAL_SERVER_ERROR,
     description: 'An error has occurred while trying to update player',
+  })
+  @ApiResponse({
+    status: HttpStatus.UNAUTHORIZED,
+    description: 'Unauthorized',
   })
   updateById(@Param('id') id: string, @Body() newPlayerData: UpdatePlayerDto): Promise<void> {
     return this.playersService.updateById(id, newPlayerData).catch((error) => {
@@ -200,6 +224,10 @@ export class PlayersController {
   @ApiResponse({
     status: HttpStatus.NOT_FOUND,
     description: 'The player to patch was not found',
+  })
+  @ApiResponse({
+    status: HttpStatus.UNAUTHORIZED,
+    description: 'Unauthorized',
   })
   async patchById(@Param('id') id: string, @Body() newPlayerData: CreatePlayerDto): Promise<void> {
     const player: PlayerResponseDto = await this.playersService.getById(id).catch((error) => {
@@ -229,6 +257,10 @@ export class PlayersController {
   @ApiResponse({
     status: HttpStatus.INTERNAL_SERVER_ERROR,
     description: 'An error has occurred while trying to delete championship',
+  })
+  @ApiResponse({
+    status: HttpStatus.UNAUTHORIZED,
+    description: 'Unauthorized',
   })
   async deleteById(@Param('id') id: string) {
     const player: PlayerResponseDto = await this.playersService.getById(id).catch((error) => {

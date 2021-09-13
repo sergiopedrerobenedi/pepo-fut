@@ -11,8 +11,10 @@ import {
   Post,
   Put,
   Query,
+  UseGuards,
 } from '@nestjs/common';
-import { ApiBody, ApiOperation, ApiQuery, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { AuthGuard } from '@nestjs/passport';
+import { ApiBearerAuth, ApiBody, ApiOperation, ApiQuery, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { Pagination } from '../../common/classes/pagination.class';
 import { TeamsQueryParams } from './classes/teams-query-params.class';
 import { CreateTeamDto } from './dto/create-team.dto';
@@ -22,6 +24,8 @@ import { TeamsService } from './teams.service';
 
 @ApiTags('teams')
 @Controller('teams')
+@UseGuards(AuthGuard('jwt'))
+@ApiBearerAuth()
 export class TeamsController {
   constructor(private readonly teamsService: TeamsService) {}
 
@@ -35,6 +39,14 @@ export class TeamsController {
     description: 'The teams requested have been recovered',
     type: TeamResponseDto,
     isArray: true,
+  })
+  @ApiResponse({
+    status: HttpStatus.INTERNAL_SERVER_ERROR,
+    description: 'An error has occurred while trying to recover teams',
+  })
+  @ApiResponse({
+    status: HttpStatus.UNAUTHORIZED,
+    description: 'Unauthorized',
   })
   @ApiQuery({
     name: 'limit',
@@ -104,7 +116,11 @@ export class TeamsController {
   })
   @ApiResponse({
     status: HttpStatus.INTERNAL_SERVER_ERROR,
-    description: 'An error has occurred while trying to recover tea ',
+    description: 'An error has occurred while trying to recover team ',
+  })
+  @ApiResponse({
+    status: HttpStatus.UNAUTHORIZED,
+    description: 'Unauthorized',
   })
   async getById(@Param('id') id: string): Promise<TeamResponseDto> {
     const result: TeamResponseDto = await this.teamsService.getById(id).catch((error) => {
@@ -138,6 +154,10 @@ export class TeamsController {
     status: HttpStatus.INTERNAL_SERVER_ERROR,
     description: 'An error has occurred while trying to create team',
   })
+  @ApiResponse({
+    status: HttpStatus.UNAUTHORIZED,
+    description: 'Unauthorized',
+  })
   create(@Body() createTeamDto: CreateTeamDto): Promise<void> {
     return this.teamsService.create(createTeamDto).catch((error) => {
       throw new InternalServerErrorException(error.toString());
@@ -155,7 +175,11 @@ export class TeamsController {
   })
   @ApiResponse({
     status: HttpStatus.INTERNAL_SERVER_ERROR,
-    description: 'An error has occurred while trying to update tea ',
+    description: 'An error has occurred while trying to update team ',
+  })
+  @ApiResponse({
+    status: HttpStatus.UNAUTHORIZED,
+    description: 'Unauthorized',
   })
   updateById(@Param('id') id: string, @Body() newTeamData: UpdateTeamDto): Promise<void> {
     return this.teamsService.updateById(id, newTeamData).catch((error) => {
@@ -179,6 +203,10 @@ export class TeamsController {
   @ApiResponse({
     status: HttpStatus.NOT_FOUND,
     description: 'The team to patch was not found',
+  })
+  @ApiResponse({
+    status: HttpStatus.UNAUTHORIZED,
+    description: 'Unauthorized',
   })
   async patchById(@Param('id') id: string, @Body() newPlayerData: CreateTeamDto): Promise<void> {
     const team: TeamResponseDto = await this.teamsService.getById(id);
@@ -206,6 +234,10 @@ export class TeamsController {
   @ApiResponse({
     status: HttpStatus.INTERNAL_SERVER_ERROR,
     description: 'An error has occurred while trying to delete team',
+  })
+  @ApiResponse({
+    status: HttpStatus.UNAUTHORIZED,
+    description: 'Unauthorized',
   })
   async deleteById(@Param('id') id: string): Promise<void> {
     const team: TeamResponseDto = await this.teamsService.getById(id);
