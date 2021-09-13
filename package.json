@@ -9,7 +9,7 @@
     "build:api:prod": "nx build --prod --skip-nx-cache ",
     "test": "nx test",
     "deploy:api": "nx deploy api",
-    "test:coverage": "jest coverage"
+    "test:coverage": "jest --coverage"
   },
   "private": true,
   "dependencies": {
