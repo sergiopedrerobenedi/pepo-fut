@@ -8,7 +8,8 @@
     "build:api": "nx build api --configuration=dev --skip-nx-cache ",
     "build:api:prod": "nx build --prod --skip-nx-cache ",
     "test": "nx test",
-    "deploy:api": "nx deploy api"
+    "deploy:api": "nx deploy api",
+    "test:coverage": "jest coverage"
   },
   "private": true,
   "dependencies": {

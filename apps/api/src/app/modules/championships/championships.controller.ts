@@ -11,8 +11,10 @@ import {
   Post,
   Put,
   Query,
+  UseGuards,
 } from '@nestjs/common';
-import { ApiBody, ApiOperation, ApiQuery, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { AuthGuard } from '@nestjs/passport';
+import { ApiBearerAuth, ApiBody, ApiOperation, ApiQuery, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { Pagination } from '../../common/classes/pagination.class';
 import { ChampionshipsService } from './championships.service';
 import { ChampionshipResponseDto } from './dto/championship-response.dto';
@@ -20,6 +22,8 @@ import { CreateChampionshipDto } from './dto/create-championship.dto';
 import { UpdateChampionshipDto } from './dto/update-championship.dto';
 
 @ApiTags('championships')
+@UseGuards(AuthGuard('jwt'))
+@ApiBearerAuth()
 @Controller(`championships`)
 export class ChampionshipsController {
   constructor(private readonly championshipService: ChampionshipsService) {}
@@ -34,6 +38,14 @@ export class ChampionshipsController {
     description: 'The championships requested have been recovered',
     type: ChampionshipResponseDto,
     isArray: true,
+  })
+  @ApiResponse({
+    status: HttpStatus.INTERNAL_SERVER_ERROR,
+    description: 'An error has occurred while trying to recover championships',
+  })
+  @ApiResponse({
+    status: HttpStatus.UNAUTHORIZED,
+    description: 'Unauthorized',
   })
   @ApiQuery({
     name: 'limit',
@@ -82,6 +94,7 @@ export class ChampionshipsController {
   }
 
   @Get(':id')
+  @ApiBearerAuth()
   @ApiOperation({
     summary: 'Get championship by id',
     description: 'Fetch championship queried by its id',
@@ -98,6 +111,10 @@ export class ChampionshipsController {
   @ApiResponse({
     status: HttpStatus.INTERNAL_SERVER_ERROR,
     description: 'An error has occurred while trying to recover championship',
+  })
+  @ApiResponse({
+    status: HttpStatus.UNAUTHORIZED,
+    description: 'Unauthorized',
   })
   async getById(@Param('id') id: string): Promise<ChampionshipResponseDto> {
     const result: ChampionshipResponseDto = await this.championshipService.getById(id).catch((error) => {
@@ -131,6 +148,10 @@ export class ChampionshipsController {
     status: HttpStatus.INTERNAL_SERVER_ERROR,
     description: 'An error has occurred while trying to create championship',
   })
+  @ApiResponse({
+    status: HttpStatus.UNAUTHORIZED,
+    description: 'Unauthorized',
+  })
   create(@Body() createChampionshipDto: CreateChampionshipDto): Promise<void> {
     return this.championshipService.create(createChampionshipDto).catch((error) => {
       throw new InternalServerErrorException(error.toString());
@@ -149,6 +170,10 @@ export class ChampionshipsController {
   @ApiResponse({
     status: HttpStatus.INTERNAL_SERVER_ERROR,
     description: 'An error has occurred while trying to update championship',
+  })
+  @ApiResponse({
+    status: HttpStatus.UNAUTHORIZED,
+    description: 'Unauthorized',
   })
   updateById(@Param('id') id: string, @Body() newChampionshipData: UpdateChampionshipDto): Promise<void> {
     return this.championshipService.updateById(id, newChampionshipData).catch((error) => {
@@ -172,6 +197,10 @@ export class ChampionshipsController {
   @ApiResponse({
     status: HttpStatus.NOT_FOUND,
     description: 'The championship to patch was not found',
+  })
+  @ApiResponse({
+    status: HttpStatus.UNAUTHORIZED,
+    description: 'Unauthorized',
   })
   async patchById(@Param('id') id: string, @Body() newChampionshipData: CreateChampionshipDto): Promise<void> {
     const championship: ChampionshipResponseDto = await this.championshipService.getById(id).catch((error) => {
@@ -201,6 +230,10 @@ export class ChampionshipsController {
   @ApiResponse({
     status: HttpStatus.INTERNAL_SERVER_ERROR,
     description: 'An error has occurred while trying to delete championship',
+  })
+  @ApiResponse({
+    status: HttpStatus.UNAUTHORIZED,
+    description: 'Unauthorized',
   })
   async deleteById(@Param('id') id: string) {
     const championship: ChampionshipResponseDto = await this.championshipService.getById(id).catch((error) => {

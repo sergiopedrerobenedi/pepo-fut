@@ -3,7 +3,7 @@ import * as passport from 'passport';
 import { ExtractJwt, Strategy } from 'passport-jwt';
 import { TOKEN_SECRET } from '../auth.constants';
 import { AuthService } from '../auth.service';
-import { JwtPayload } from '../dto/interfaces/jwt-payload.interface';
+import { JwtPayload } from '../classes/jwt-payload.class';
 
 @Injectable()
 export class JwtStrategy extends Strategy {
