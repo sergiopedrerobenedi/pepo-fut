@@ -3,6 +3,7 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import * as request from 'supertest';
 import { Repository } from 'typeorm';
+import { environment } from '../../../../environments/environment';
 import { AppModule } from '../../../app.module';
 import { User } from '../../users/model/user.entity';
 import { UsersService } from '../../users/users.service';
@@ -14,19 +15,7 @@ describe('AuthController (e2e)', () => {
 
   beforeAll(async () => {
     const moduleFixture: TestingModule = await Test.createTestingModule({
-      imports: [
-        AppModule,
-        TypeOrmModule.forRoot({
-          type: 'postgres',
-          port: 5432,
-          username: 'postgres',
-          password: 'postgres',
-          database: 'pepo_fut',
-          synchronize: true,
-          logging: true,
-          entities: [User],
-        }),
-      ],
+      imports: [AppModule, TypeOrmModule.forRoot(environment.typeOrmConfig)],
     }).compile();
 
     app = moduleFixture.createNestApplication();

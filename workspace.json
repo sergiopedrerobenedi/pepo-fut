@@ -17,6 +17,7 @@
             "generatePackageJson": true
           },
           "configurations": {
+            "dev": {},
             "production": {
               "optimization": true,
               "extractLicenses": true,
@@ -34,6 +35,14 @@
           "executor": "@nrwl/node:execute",
           "options": {
             "buildTarget": "api:build"
+          },
+          "configurations": {
+            "production": {
+              "buildTarget": "api:build:production"
+            },
+            "dev": {
+              "buildTarget": "api:build:dev"
+            }
           }
         },
         "lint": {
@@ -54,10 +63,7 @@
         "deploy": {
           "builder": "@nrwl/workspace:run-commands",
           "options": {
-            "commands": [
-              "nx build api",
-              "docker build -f ./apps/api/Dockerfile . -t pepo-fut-api"
-            ],
+            "commands": ["nx build api", "docker build -f ./Dockerfile . -t pepo-fut"],
             "parallel": false
           }
         }

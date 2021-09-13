@@ -6,7 +6,7 @@ export class Team {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
-  @Column('varchar')
+  @Column('varchar', { unique: true })
   name: string;
 
   @Column('varchar')

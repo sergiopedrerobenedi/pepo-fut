@@ -96,7 +96,7 @@ export class TeamsService
       .where('1=1');
 
     if (queryParams) {
-      const { name, foundationDate, championshipName, nationality, president, stadium } = queryParams;
+      const { name, foundationDate, nationality, president, stadium } = queryParams;
       if (name) {
         query.andWhere('name = :name', { name });
       }
@@ -109,7 +109,6 @@ export class TeamsService
       if (president) {
         query.andWhere('president = :president', { president });
       }
-
       if (stadium) {
         query.andWhere('stadium = :stadium', { stadium });
       }

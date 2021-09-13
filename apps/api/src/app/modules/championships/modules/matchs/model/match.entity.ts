@@ -13,7 +13,7 @@ export class Match {
   @Column('date')
   startDate: Date;
 
-  @ManyToOne(() => Team, (team) => team)
+  @ManyToOne(() => Team, (team) => team, { onDelete: 'CASCADE' })
   localTeam: Team;
 
   @ManyToOne(() => Team, (team) => team)
