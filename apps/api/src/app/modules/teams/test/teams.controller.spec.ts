@@ -42,9 +42,7 @@ describe('Teams Controller', () => {
   });
   describe('getById', () => {
     it('should get a single team', async () => {
-      await expect(controller.getById('fbefe545-286e-4fd8-9b16-ee49d04aadf5')).resolves.toEqual(
-        GET_ALL_TEAMS_MOCK.items[0],
-      );
+      await expect(controller.getById(GET_ALL_TEAMS_MOCK.items[0].id)).resolves.toEqual(GET_ALL_TEAMS_MOCK.items[0]);
     });
     it('should not exists team requested', async () => {
       jest.spyOn(service, 'getById').mockResolvedValue(null);
@@ -67,6 +65,7 @@ describe('Teams Controller', () => {
       stadium: 'Santiago Bernabeu',
     };
     it('should create a new team', async () => {
+      const save = jest.spyOn(service, 'updateById').mockResolvedValue();
       await expect(controller.create(newTeamDto)).resolves.not.toThrow();
     });
     it('should error occurs when trying to create team', async () => {
@@ -84,7 +83,9 @@ describe('Teams Controller', () => {
       stadium: 'Santiago Bernabeu',
     };
     it('should update/create an existing team', async () => {
+      const updateById = jest.spyOn(service, 'updateById').mockResolvedValue();
       await expect(controller.updateById('fbefe545-286e-4fd8-9b16-ee49d04aadf5', updateTeamDto)).resolves.not.toThrow();
+      expect(updateById).toBeCalledWith('fbefe545-286e-4fd8-9b16-ee49d04aadf5', updateTeamDto);
     });
     it('should error occurs when trying to update/create team', async () => {
       jest.spyOn(service, 'updateById').mockRejectedValueOnce('Internal Server Error');
@@ -106,15 +107,17 @@ describe('Teams Controller', () => {
     };
     it('should patch an existing team', async () => {
       await expect(controller.patchById('fbefe545-286e-4fd8-9b16-ee49d04aadf5', createTeam)).resolves.not.toThrow();
+      const patchById = jest.spyOn(service, 'patchById').mockRejectedValueOnce(() => {});
+      expect(patchById).toBeCalledWith('fbefe545-286e-4fd8-9b16-ee49d04aadf5', createTeam);
     });
 
     it('should not exists team requested', async () => {
-      jest.spyOn(service, 'getById').mockResolvedValue(null);
+      const getById = jest.spyOn(service, 'getById').mockResolvedValue(null);
       await expect(controller.patchById('fbefe545-286e-4fd8-9b16-ee49d04aadf5', createTeam)).rejects.toThrow(
         new NotFoundException(),
       );
+      expect(getById).toBeCalledWith('fbefe545-286e-4fd8-9b16-ee49d04aadf5');
     });
-
     it('should error occurs when trying to patch by id team', async () => {
       jest.spyOn(service, 'patchById').mockRejectedValueOnce('Internal Server Error');
       await expect(controller.patchById('fbefe545-286e-4fd8-9b16-ee49d04aadf5', createTeam)).rejects.toThrow(
@@ -125,20 +128,24 @@ describe('Teams Controller', () => {
 
   describe('deleteById', () => {
     it('should delete a team by id', async () => {
-      await expect(controller.deleteById('a uuid that exists')).resolves.not.toThrow();
+      await expect(controller.deleteById(GET_ALL_TEAMS_MOCK.items[0].id)).resolves.not.toThrow();
+      const deleteById = jest.spyOn(service, 'deleteById').mockRejectedValueOnce(() => {});
+      expect(deleteById).toBeCalledWith(GET_ALL_TEAMS_MOCK.items[0].id);
     });
     it('should not exists team requested', async () => {
-      jest.spyOn(service, 'getById').mockResolvedValue(null);
+      const getById = await jest.spyOn(service, 'getById').mockResolvedValue(null);
       await expect(controller.deleteById('fbefe545-286e-4fd8-9b16-ee49d04aadf5')).rejects.toThrow(
         new NotFoundException(),
       );
+      expect(getById).toBeCalledWith('fbefe545-286e-4fd8-9b16-ee49d04aadf5');
     });
 
     it('should error occurs when trying to delete by id team', async () => {
-      jest.spyOn(service, 'deleteById').mockRejectedValueOnce('Internal Server Error');
+      const deleteById = jest.spyOn(service, 'deleteById').mockRejectedValueOnce('Internal Server Error');
       await expect(controller.deleteById('fbefe545-286e-4fd8-9b16-ee49d04aadf5')).rejects.toThrow(
         new InternalServerErrorException(),
       );
+      expect(deleteById).toBeCalledWith('fbefe545-286e-4fd8-9b16-ee49d04aadf5');
     });
   });
 });
