@@ -10,12 +10,12 @@ import { EnvironmentDto } from './environment.dto';
 export const environment: EnvironmentDto = {
   production: true,
   typeOrmConfig: {
-    host: 'ec2-3-233-100-43.compute-1.amazonaws.com',
+    host: 'ec2-52-203-74-38.compute-1.amazonaws.com',
     type: 'postgres',
     port: 5432,
-    username: 'lnemlxbybwluwt',
-    password: '1bdc731c823a281c0f004faff4d7652c2e690e2a6e64eb1e3fb9ce048fb5a9d6',
-    database: 'da32nl1j2f1u0b',
+    username: 'xcezbjvhmpniqh',
+    password: '056b9ec4b87700c11a1e76a309e3848a220b1aa938992afa742e06f5bda61e92',
+    database: 'dblr9jp4o7cghe',
     synchronize: false,
     logging: false,
     entities: [User, Team, Championship, Round, Match, Player, PlayerPosition],
