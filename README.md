@@ -47,16 +47,24 @@ If you run this command, you have to been installed PostgreSQL previously.
 
 ### Build
 
-Run `nx build my-app` to build the project. The build artifacts will be stored in the `dist/` directory. Use the `--prod` flag for a production build.
+Run `npm run build:api` to build the project with development config. The build artifacts will be stored in the `dist/` directory. Use the `npm run build:api:prod` script for a production build.
 
 ### Running unit tests
 
-Run `npm run test` to execute the unit tests via [Jest](https://jestjs.io).
+Run `npm run test` to execute the unit and e2e tests via [Jest](https://jestjs.io).
 
 Two unit tests are defined, which cover the use cases of teams.service and teams controller.
 
 In adition, an e2e test is defined that covers the coverage of the authentication module.
 
-## Scope
+With `npm run test:coverage`script you can see the coverage of this tests.
 
-Visit the [Nx Documentation](https://nx.dev) to learn more.
+## Some needed improvements and coments
+
+- The Swagger examples are not as defined as I would like.
+- It can be used dotenv for environments instead enviroment.prod.ts and enviroment.ts fields . I used it by default due to use NX library.
+- It can be used a CRUD interface for services and controllers too.
+- It is pending to implement migrations for the production environment and to be able to dump more data into the database
+- There are 4 teams created by default, with 5 players for team, into the database. The rest of the tables are empty. You can do operations through this models.
+- The frontend app is not developed. I used NX to develop the frontend app easier.
+- Builds are deployed using Docker, docker-compose and Heroku .
