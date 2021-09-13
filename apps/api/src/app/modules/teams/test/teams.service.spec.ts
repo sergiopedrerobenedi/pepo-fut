@@ -16,12 +16,14 @@ describe('TeamsService', () => {
       .fn()
       .mockImplementation(() => Promise.resolve([GET_ALL_TEAMS_MOCK.items, GET_ALL_TEAMS_MOCK.count]));
 
-    // const andWhereStadium = jest.fn(() => ({ getManyAndCount }));
-    // const andWherePresident = jest.fn(() => ({ andWhere: andWhereStadium }));
-    // const andWhereNationality = jest.fn(() => ({ andWhere: andWherePresident }));
-    // const andWhereFoundationName = jest.fn(() => ({ andWhere: andWhereNationality }));
-    const andWhereName = jest.fn(() => ({ andWhere: where }));
-
+    const createQueryBuilder: any = {
+      take: () => createQueryBuilder,
+      skip: () => createQueryBuilder,
+      leftJoinAndSelect: () => createQueryBuilder,
+      where: () => createQueryBuilder,
+      andWhere: () => createQueryBuilder,
+      getManyAndCount,
+    };
     const where = jest.fn(() => ({ getManyAndCount }));
     const leftJoindAndSelect1 = jest.fn(() => ({ where }));
     const leftJoindAndSelect2 = jest.fn(() => ({ leftJoinAndSelect: leftJoindAndSelect1 }));
@@ -38,12 +40,16 @@ describe('TeamsService', () => {
             find: jest.fn().mockResolvedValue(GET_ALL_TEAMS_MOCK),
             findOne: jest.fn().mockResolvedValue(GET_ALL_TEAMS_MOCK.items[0]),
             create: jest.fn().mockReturnValue(GET_ALL_TEAMS_MOCK.items[0]),
-            save: jest.fn().mockImplementation(() => Promise.resolve()),
+            save: jest.fn().mockResolvedValue(() => {
+              return GET_ALL_TEAMS_MOCK.items[0];
+            }),
+            // as these do not actually use their return values in our sample
+            // we just make sure that their resolve is true to not crash
             update: jest.fn().mockResolvedValue(true),
             // as these do not actually use their return values in our sample
             // we just make sure that their resolve is true to not crash
             delete: jest.fn().mockResolvedValue(true),
-            createQueryBuilder: jest.fn(() => ({ take })),
+            createQueryBuilder: jest.fn(() => createQueryBuilder),
           },
         },
       ],
@@ -58,7 +64,25 @@ describe('TeamsService', () => {
   });
   describe('getAll', () => {
     it('should return an array of teams', async () => {
-      const teams = await service.getAll();
+      const teams = await service.getAll({
+        championshipName: 'jeje',
+        foundationDate: new Date(),
+        limit: 1,
+        name: 'name',
+        nationality: 'spain',
+        offset: 0,
+        president: 'one',
+        stadium: 'two',
+      });
+
+      const getManyAndCount = jest
+        .fn()
+        .mockImplementation(() => Promise.resolve([GET_ALL_TEAMS_MOCK.items, GET_ALL_TEAMS_MOCK.count]));
+      const andWhereStadium = jest.fn(() => ({ getManyAndCount }));
+      const andWherePresident = jest.fn(() => ({ andWhere: andWhereStadium }));
+      const andWhereNationality = jest.fn(() => ({ andWhere: andWherePresident }));
+      const andWhereFoundationName = jest.fn(() => ({ andWhere: andWhereNationality }));
+      const andWhereName = jest.fn(() => ({ andWhere: andWhereFoundationName }));
       expect(teams).toEqual(GET_ALL_TEAMS_MOCK);
     });
   });
@@ -66,8 +90,10 @@ describe('TeamsService', () => {
   describe('getById', () => {
     it('should get a single Team', () => {
       const repoSpy = jest.spyOn(repo, 'findOne');
-      expect(service.getById('fbefe545-286e-4fd8-9b16-ee49d04aadf5')).resolves.toEqual(GET_ALL_TEAMS_MOCK.items[0]);
-      expect(repoSpy).toBeCalledWith({ where: { id: 'fbefe545-286e-4fd8-9b16-ee49d04aadf5' } });
+      expect(service.getById(GET_ALL_TEAMS_MOCK.items[0].id)).resolves.toEqual(GET_ALL_TEAMS_MOCK.items[0]);
+      expect(repoSpy).toBeCalledWith({ where: { id: GET_ALL_TEAMS_MOCK.items[0].id } });
+      const team: Team = new Team();
+      expect(service.fromEntityToDto(team)).toEqual({});
     });
     it('should has an error when trying to recover single Team', () => {
       const repoSpy = jest.spyOn(repo, 'findOne').mockRejectedValueOnce(new Error('Bad Delete Method.'));
@@ -158,21 +184,20 @@ describe('TeamsService', () => {
 
   describe('updateById', () => {
     it('should call the update by id method if exists', async () => {
-      const repoSpy = jest.spyOn(repo, 'save');
-      expect(
-        service.updateById('fbefe545-286e-4fd8-9b16-ee49d04aadf5', {
-          name: 'Real Zaragoza',
-          logoPath: '/images/realZaragoza.jpg',
-          nationality: 'France',
-          players: [],
-          president: 'Sergio Pedrero',
-          stadium: 'La Romareda',
-        }),
-      ).resolves.not.toThrow();
+      const repoFindOne = jest.spyOn(repo, 'findOne');
+      await service.updateById(GET_ALL_TEAMS_MOCK.items[0].id, GET_ALL_TEAMS_MOCK.items[0]);
+      expect(repoFindOne).toBeCalledWith({ where: { id: GET_ALL_TEAMS_MOCK.items[0].id } });
+      expect(repoFindOne).toBeCalledTimes(1);
+      expect(jest.spyOn(repo, 'save')).toBeCalledWith({
+        ...GET_ALL_TEAMS_MOCK.items[0],
+        ...GET_ALL_TEAMS_MOCK.items[0],
+      });
+      expect(jest.spyOn(repo, 'save')).toBeCalledTimes(1);
     });
     it('should call the update by id method if not exists', async () => {
-      expect(
-        service.updateById('fbefe545-286e-4fd8-9b16-ee49d04aadf5', {
+      const repoFindOne = jest.spyOn(repo, 'findOne');
+      await expect(
+        service.updateById(GET_ALL_TEAMS_MOCK.items[0].id, {
           name: 'Real Zaragoza',
           logoPath: '/images/realZaragoza.jpg',
           nationality: 'France',
@@ -181,6 +206,20 @@ describe('TeamsService', () => {
           stadium: 'La Romareda',
         }),
       ).resolves.not.toThrow();
+      expect(repoFindOne).toBeCalledWith({ where: { id: GET_ALL_TEAMS_MOCK.items[0].id } });
+      expect(repoFindOne).toBeCalledTimes(1);
+      expect(jest.spyOn(repo, 'save')).toBeCalledWith({
+        ...GET_ALL_TEAMS_MOCK.items[0],
+        ...{
+          name: 'Real Zaragoza',
+          logoPath: '/images/realZaragoza.jpg',
+          nationality: 'France',
+          players: [],
+          president: 'Sergio Pedrero',
+          stadium: 'La Romareda',
+        },
+      });
+      expect(jest.spyOn(repo, 'save')).toBeCalledTimes(1);
     });
     it('should has an error when trying to update team', () => {
       const repoSpy = jest.spyOn(repo, 'save').mockRejectedValueOnce(new Error('Bad Delete Method.'));
@@ -198,6 +237,33 @@ describe('TeamsService', () => {
   });
 
   describe('patchById', () => {
+    it('should call the update by id method if exists', async () => {
+      const repoSpy = jest.spyOn(repo, 'update');
+      const newDate = new Date();
+      await expect(
+        service.patchById(GET_ALL_TEAMS_MOCK.items[0].id, {
+          foundationDate: newDate,
+          logoPath: 'newLogopath',
+          name: 'newName',
+          nationality: 'new nationality',
+          players: [],
+          president: 'new president',
+          stadium: 'new stadium,',
+        }),
+      ).resolves.not.toThrow();
+      expect(repoSpy).toBeCalledWith(
+        { id: GET_ALL_TEAMS_MOCK.items[0].id },
+        {
+          foundationDate: newDate,
+          logoPath: 'newLogopath',
+          name: 'newName',
+          nationality: 'new nationality',
+          players: [],
+          president: 'new president',
+          stadium: 'new stadium,',
+        },
+      );
+    });
     it('should throw an error when trying to patch a team by id', () => {
       const repoSpy = jest.spyOn(repo, 'update').mockRejectedValueOnce(new Error('Bad Delete Method.'));
       expect(
