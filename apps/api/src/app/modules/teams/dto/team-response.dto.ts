@@ -45,6 +45,13 @@ export class TeamResponseDto {
   logoPath: string;
 
   @ApiProperty({
+    type: Date,
+    required: true,
+    example: '1932-06-12',
+  })
+  foundationDate: Date;
+
+  @ApiProperty({
     type: PlayerResponseDto,
     required: true,
     isArray: true,

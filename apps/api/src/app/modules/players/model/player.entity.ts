@@ -51,6 +51,9 @@ export class Player {
   @UpdateDateColumn()
   updatedAt: Date;
 
-  @ManyToOne(() => Team, (team) => team.players)
+  /**
+   * If team is deleted, then players associated not have team assigned
+   */
+  @ManyToOne(() => Team, (team) => team.players, { onDelete: 'SET NULL' })
   team: Team;
 }
