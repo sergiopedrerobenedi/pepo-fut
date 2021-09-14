@@ -1,5 +1,4 @@
 FROM node:lts-alpine
-ENV NODE_ENV=production
 ENV PORT=80
 
 WORKDIR /usr/src/app

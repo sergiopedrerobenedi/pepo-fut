@@ -216,7 +216,7 @@ export class ChampionshipsController {
 
   @Delete(':id')
   @ApiOperation({
-    summary: 'Updates partially a championship',
+    summary: 'Deletes championship by its id',
     description: 'Updates partially an existing championship',
   })
   @ApiResponse({
