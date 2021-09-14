@@ -16,6 +16,7 @@ import {
 import { AuthGuard } from '@nestjs/passport';
 import { ApiBearerAuth, ApiBody, ApiOperation, ApiQuery, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { Pagination } from '../../../../common/classes/pagination.class';
+import { TeamResponseDto } from '../../../teams/dto/team-response.dto';
 import { MatchsQueryParams } from './classes/matchs-query-params.class';
 import { CreateMatchDto } from './dto/create-match.dto';
 import { MatchResponseDto } from './dto/match-response.dto';
@@ -82,13 +83,13 @@ export class MatchsController {
     name: 'localTeamName',
     description: "The match''s local team name which is used to filter results",
     required: false,
-    type: String,
+    type: TeamResponseDto,
   })
   @ApiQuery({
     name: 'awayTeamName',
     description: "The matchs's away team name which is used to filter results",
     required: false,
-    type: String,
+    type: TeamResponseDto,
   })
   getAll(@Query() queryParams: MatchsQueryParams): Promise<Pagination<MatchResponseDto>> {
     return this.matchsService.getAll(queryParams);
