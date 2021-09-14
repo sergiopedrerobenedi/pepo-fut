@@ -15,7 +15,7 @@ export class CreateMatchDto {
   @ApiProperty({
     type: TeamResponseDto,
     required: true,
-    example: new TeamResponseDto(),
+    example: TeamResponseDto,
   })
   @Type(() => TeamResponseDto)
   @ValidateNested()
@@ -24,7 +24,7 @@ export class CreateMatchDto {
   @ApiProperty({
     type: TeamResponseDto,
     required: true,
-    example: new TeamResponseDto(),
+    example: TeamResponseDto,
   })
   @Type(() => TeamResponseDto)
   @ValidateNested()
